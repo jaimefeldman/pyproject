@@ -8,7 +8,7 @@ def main():
     parser = argparse.ArgumentParser(prog='pypa', 
                                      description='Generator de paqutes python, para linea de comandos.', 
                                      epilog=frase.una_frase())
-
+    parser.add_argument('-v','--version', action='version', version='%(prog)s 1.0 MIT Licence')
     subparser = parser.add_subparsers(help='opciones iniciales.')
 
     # creando las opciones para el comando init
@@ -45,6 +45,8 @@ def main():
         exit(1)
 
     args = parser.parse_args()
+
+
 
 if __name__ == "__main__":
     exit(main())
