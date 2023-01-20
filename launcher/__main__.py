@@ -1,5 +1,6 @@
 import sys, argparse, random
 from modules.frases import frases
+#from termcolor import colord, cprint
 
 def main():
 
@@ -23,9 +24,10 @@ def main():
     init_parser.add_argument('-n', 
                              '--appname', 
                              help='El nombre del la aplicación.', 
-                             required=True, 
-                             type=str)    
-    
+                             type=str,
+                             required=True
+                             )
+
     init_parser.add_argument('-l',
                              '--licence', 
                              help='Especifíca la licencia para el proyecto.',
@@ -44,9 +46,25 @@ def main():
         parser.print_help()
         exit(1)
 
-    args = parser.parse_args()
+    # convirtiendo los parametros en un diccionario.
+    args = parser.parse_args().__dict__
+    
+    # analizando todos los parametros.
+    print("Nombre del proyecto:", args['project_name'])
+    print("Tipo:", end=" ")
+    if args['type'] == 'exe':
+        print("Ejecutable")
+    else:
+        print("Libreria")
 
-
+    print("Nombre de la app:", args['appname'])
+    print("Liciencia:", str(args['licence']).upper())
+    print("Autor:", ' '.join(args['author']))
+      
+    print(f"""hola 
+    esto es una prueba, {args['appname']}
+    a ver si lo imprime asi
+    """)
 
 if __name__ == "__main__":
     exit(main())
