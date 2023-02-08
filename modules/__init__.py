@@ -1,1 +1,1 @@
-from modules.frases import frases
+from modules.check_messages import ChkMessage

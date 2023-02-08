@@ -1,10 +1,14 @@
-import sys, argparse, random
+import sys, argparse, random, os, shutil
 from modules.frases import frases
-#from termcolor import colord, cprint
+from modules.utils  import create_dir, copy_license
+from modules import ChkMessage
+from termcolor import colored, cprint
 
 def main():
 
     frase = frases()
+    project_name = ''
+    project_type = ''
 
     parser = argparse.ArgumentParser(prog='pypa', 
                                      description='Generator de paqutes python, para linea de comandos.', 
@@ -16,7 +20,7 @@ def main():
     init_parser = subparser.add_parser('init', help='Inicializa una estrucutra de proyecto.')
     init_parser.add_argument('project_name', help='El nombre del proyecto o directorio contenedor.')
     init_parser.add_argument('-t', 
-                             '--type', 
+                             '--type',
                              help='el tipo de proyecto a generar, [exe | lib]', 
                              required=True, 
                              choices=['exe','lib'])
@@ -29,7 +33,7 @@ def main():
                              )
 
     init_parser.add_argument('-l',
-                             '--licence', 
+                             '--license', 
                              help='Especifíca la licencia para el proyecto.',
                              required=True,
                              choices=['bsd', 'mit', 'lgpl', 'gpl2', 'gpl3', 'mpl'])
@@ -50,21 +54,62 @@ def main():
     args = parser.parse_args().__dict__
     
     # analizando todos los parametros.
-    print("Nombre del proyecto:", args['project_name'])
-    print("Tipo:", end=" ")
-    if args['type'] == 'exe':
-        print("Ejecutable")
-    else:
-        print("Libreria")
+    project_name = args['project_name']
 
-    print("Nombre de la app:", args['appname'])
-    print("Liciencia:", str(args['licence']).upper())
-    print("Autor:", ' '.join(args['author']))
+    # determinando si es libreria o ejecutable.
+    if args['type'] == 'exe':
+        project_type = "executable"        
+    else:
+        project_type = "library"
+     
+    # print("Nombre de la app:", args['appname'])
+    # print("Liciencia:", str(args['licence']).upper())
+    # print("Autor:", ' '.join(args['author']))
       
-    print(f"""hola 
-    esto es una prueba, {args['appname']}
-    a ver si lo imprime asi
-    """)
+
+    # salidas de texto dependiendo del tamaño de la terminal.
+    term_size = os.get_terminal_size()
+
+    current_user = os.getlogin()
+    current_user_id = os.getuid()
+
+    # titulo inicial.
+    titile_len = len(f"Initializing python {project_type} package.")
+
+    print("\nInitializing", colored("python", 'green'), f"{project_type} package.")
+    #print("="* term_size.columns)
+    print("="*titile_len)
+    # chequeando estructura de direcotrios.
+    if os.path.isdir(os.getcwd()+'/'+project_name):
+
+        print("- el proyecto", colored(f"{project_name}", 'magenta'), "ya exsiste en el directorio actual.")
+        exit(1)
+
+    # creando la estrcutura de directorios y archivos base.
+    message = ChkMessage(9)
+    message.message("creating directory structs") 
+    #points_size = int((((term_size.columns/2) - len(msg)-5)))
+    #points_size = 9 
+    #print(msg + "."*points_size + "[ ", end="")
+
+    # primero crea el directorio del proyecto.
+    create_dir(project_name)
+
+    # crando el directorio launcher
+    create_dir(f"{project_name}/launcher")
+    create_dir(f"{project_name}/modules")
+    #print(colored("OK", "green"), "]")
+
+    # copiando el archivo __main__
+    shutil.copyfile("resources/files/__main__.py", f"{project_name}/launcher/__main__.py")
+    shutil.copyfile("resources/files/__init__.py", f"{project_name}/launcher/__init__.py")
+    shutil.copyfile("resources/files/__init__.py", f"{project_name}/modules/__init__.py")
+   
+    copy_license(str(args['license']), ' '.join(args['author']), project_name)
+          
+    # estableciendo la propiedad de los directorios y archivos al usuario acutal.
+    os.system(f"chown -R {current_user} {project_name}/")
+    
 
 if __name__ == "__main__":
     exit(main())
