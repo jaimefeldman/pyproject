@@ -104,8 +104,17 @@ def main():
     shutil.copyfile("resources/files/__main__.py", f"{project_name}/launcher/__main__.py")
     shutil.copyfile("resources/files/__init__.py", f"{project_name}/launcher/__init__.py")
     shutil.copyfile("resources/files/__init__.py", f"{project_name}/modules/__init__.py")
+    
+    # Iternado sobre la lista de los nombres recibifdos
+    # y poniendo la primeras letras en mayusculas.
+    nombres_campitalizados = []
+    for nombre in args['author']:
+        nombres_campitalizados.append(nombre.capitalize())
+
+    #author = ' '.join(args['author']).capitalize()
+    author = ' '.join(nombres_campitalizados)
    
-    copy_license(str(args['license']), ' '.join(args['author']), project_name)
+    copy_license(str(args['license']), author, project_name)
           
     # estableciendo la propiedad de los directorios y archivos al usuario acutal.
     os.system(f"chown -R {current_user} {project_name}/")
