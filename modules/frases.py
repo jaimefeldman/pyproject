@@ -1,9 +1,11 @@
 import random, json
+import pkg_resources
 
 class frases:
     def __init__(self):
         # Abriendo el archivo json.
-        f = open("modules/frases.json")
+        # f = open("modules/frases.json")
+        f = pkg_resources.resource_stream("modules", "frases.json")
 
         # devolviendo un objeto json como diccionario.
         data = json.load(f)
