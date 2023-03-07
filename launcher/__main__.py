@@ -107,12 +107,12 @@ def main():
     #f = pkg_resources.resource_stream("modules", "frases.json")
     main_file_template = pkg_resources.resource_filename("resources.files", "__main__.py")
     init_file_template = pkg_resources.resource_filename("resources.files", "__init__.py")
+    
 
     # copiando el archivos 
     shutil.copyfile(main_file_template, f"{project_name}/launcher/__main__.py")
     shutil.copyfile(init_file_template, f"{project_name}/launcher/__init__.py")
-    #shutil.copyfile(init_file, f"{project_name}/launcher/__init__.py")
-    #shutil.copyfile(init_file, f"{project_name}/modules/__init__.py")
+    shutil.copyfile(init_file_template, f"{project_name}/launcher/__init__.py")
     
     # Iternado sobre la lista de los nombres recibifdos
     # y poniendo la primeras letras en mayusculas.
